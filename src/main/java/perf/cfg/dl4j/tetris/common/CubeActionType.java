@@ -1,0 +1,6 @@
+package perf.cfg.dl4j.tetris.common;
+
+public enum CubeActionType {
+	ACTION_MOVE_LEFT, ACTION_MOVE_RIGHT, ACTION_TRANSFORM, ACTION_TRANSFORM_REVERSE, ACTION_MOVE_DOWN, 
+	ACTION_TO_BOTTOM
+}

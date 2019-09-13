@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import perf.cfg.dl4j.tetris.common.Cube;
 import perf.cfg.dl4j.tetris.common.CubeActionGroup;
+import perf.cfg.dl4j.tetris.common.TetrisDataGetter;
 import perf.cfg.dl4j.tetris.common.TetrisScoreCalculator;
 
 public class Common {
@@ -23,9 +24,9 @@ public class Common {
 	private static List<Cube> possibleCubeList = Arrays.asList(new CubeLine(), new CubeSquare(), 
 			new CubeL(), new CubeCounterL(), new CubeZ(), new CubeCounterZ(), new CubeT());
 	private static Properties prop = new Properties();
-	private static String configPath = System.getProperty("config.path", "config.prop");
+	private static File configFile = new File(System.getProperty("config.path", "config.prop"));
 	static {
-		try(FileInputStream in = new FileInputStream(configPath)){
+		try(FileInputStream in = new FileInputStream(configFile)){
 			prop.load(in);
 		} catch (IOException e) {
 			logger.error("", e);
@@ -35,7 +36,7 @@ public class Common {
 
 
 	public static File getCubeModelPath() {
-		return new File(getProperty("cube.model.path", "cube-model.bin", false));
+		return new File(getProperty("cube.model.path", null));
 	}
 
 	public static List<Cube> possibleCubeList() {
@@ -43,10 +44,10 @@ public class Common {
 	}
 	
 	public static Rectangle getTetrisArea() {
-		int x = getProperty("tetris.area.left", 0, true);
-		int y = getProperty("tetris.area.top", 0, true);
-		return new Rectangle(x,y,getProperty("tetris.area.right", 2000, true) - x, 
-				getProperty("tetris.area.bottom", 2000, true) - y);
+		int x = getIntProperty("tetris.area.left", null);
+		int y = getIntProperty("tetris.area.top", null);
+		return new Rectangle(x,y,getIntProperty("tetris.area.right", null) - x,
+				getIntProperty("tetris.area.bottom", null) - y);
 	}
 	
 	public static void setTetrisArea(Point leftTop, Point rightBot) throws IOException {
@@ -60,18 +61,18 @@ public class Common {
 	
 
 	public static int getTetrisWidth() {
-		return getProperty("tetris.cube.cols", 10, true);
+		return getIntProperty("tetris.cube.cols", 10);
 	}
 
 	public static int getTetrisHeight() {
-		return getProperty("tetris.cube.rows", 20, true);
+		return getIntProperty("tetris.cube.rows", 20);
 	}
 
 	public static Rectangle getNextCubeArea() {
-		int x = getProperty("tetris.next.cube.area.left", 0, true);
-		int y = getProperty("tetris.next.cube.area.top", 0, true);
-		return new Rectangle(x,y,getProperty("tetris.next.cube.area.right", 2000, true) - x, 
-				getProperty("tetris.next.cube.area.bottom", 2000, true) - y);
+		int x = getIntProperty("tetris.next.cube.area.left", null);
+		int y = getIntProperty("tetris.next.cube.area.top", null);
+		return new Rectangle(x,y,getIntProperty("tetris.next.cube.area.right", null) - x,
+				getIntProperty("tetris.next.cube.area.bottom", null) - y);
 	}
 	
 	public static void setNextCubeArea(Point leftTop, Point rightBot) throws IOException {
@@ -83,27 +84,59 @@ public class Common {
 	}
 
 	public static int getNextCubeAreaWidth() {
-		return getProperty("tetris.next.cube.cols", 4, true);
+		return getIntProperty("tetris.next.cube.cols", 4);
 	}
 
 	public static int getNextCubeAreaHeight() {
-		return getProperty("tetris.next.cube.rows", 2, true);
+		return getIntProperty("tetris.next.cube.rows", 2);
 	}
 	
-	public static int getTetrisAreaSetterInterval() {
-		return getProperty("tetris.area.setter.interval", 5, false);
+	public static int getScreenPointGetterInterval() {
+		return getIntProperty("screen.point.getter.interval", 5);
 	}
 
 	public static CubeActionGroup getCubeActionGroup() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		String className = getProperty("cube.action.class.name", "perf.cfg.dl4j.tetris.util.YXH5UCActionGroup", true);
-		Class<?> c = Thread.currentThread().getContextClassLoader().loadClass(className);
-		return (CubeActionGroup) c.getConstructor().newInstance();
+		String className = getProperty("cube.action.class.name", null);
+		return (CubeActionGroup) getInstance(className);
 	}
 
 	public static TetrisScoreCalculator getScoreCalculator() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		String className = getProperty("cube.score.calculator.class.name", "perf.cfg.dl4j.tetris.util.DefaultScoreCalculator", false);
+		String className = getProperty("cube.score.calculator.class.name", null);
+		return (TetrisScoreCalculator) getInstance(className);
+	}
+
+	public static TetrisDataGetter getNextCubeGetter() throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		String className = getProperty("next.cube.getter.class.name",null);
+		return (TetrisDataGetter) getInstance(className);
+	}
+
+	private static Object getInstance(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Class<?> c = Thread.currentThread().getContextClassLoader().loadClass(className);
-		return (TetrisScoreCalculator) c.getConstructor().newInstance();
+		return c.getConstructor().newInstance();
+	}
+
+	public static String getTetrisLoggerPath() {
+		return getProperty("tetris.logger.path", "log");
+	}
+
+	public static int getLandingHeightParam() {
+		return getIntProperty("pierre.dellacheris.height.param", 100);
+	}
+
+	public static double getBoardRowTransitionsParam() {
+		return getIntProperty("pierre.dellacheris.board.row.transition.param", 32);
+	}
+
+	public static double getBoardColTransitionsParam() {
+		return getIntProperty("pierre.dellacheris.board.col.transition.param", 93);
+	}
+
+	public static double getBoardBuriedHolesParam() {
+		return getIntProperty("pierre.dellacheris.board.buried.holes.param", 79);
+	}
+
+	public static double getBoardWellsParam() {
+		return getIntProperty("pierre.dellacheris.board.wells.param", 34);
 	}
 	
 	
@@ -153,39 +186,43 @@ public class Common {
 		}
 	}
 	
-	private static int getProperty(String key, int defValue, boolean warn) {
+	private static int getIntProperty(String key, Integer defValue) {
 		try {
 			return Integer.parseInt(prop.getProperty(key));
 		} catch(RuntimeException e) {
-			String msg = "Invalid or null number property '{}', use default value '{}' instead.";
-			Object[] args = new Object[] {key, defValue};
-			if(warn) {
-				logger.warn(msg, args);
-			} else {
-				logger.info(msg, args);
+			if(defValue == null) {
+				throw new RuntimeException(String.format("property '%s' not set or is not an integer"
+						+ " in config file '%s'.", key, configFile.getAbsolutePath()));
 			}
+			logger.warn("Invalid or null number property '{}' in config file '{}', use default value"
+					+ " '{}' instead.", key, configFile.getAbsolutePath(), defValue);
 			return defValue;
 		}
 	}
 	
-	private static String getProperty(String key, String defValue, boolean warn) {
+	private static String getProperty(String key, String defValue) {
 		String ret = prop.getProperty(key);
 		if(ret == null) {
-			ret = defValue;
-			String msg = "Invalid or null property '{}', use default value '{}' instead.";
-			Object[] args = new Object[] {key, defValue};
-			if(warn) {
-				logger.warn(msg, args);
-			} else {
-				logger.info(msg, args);
+			if(defValue == null) {
+				throw new RuntimeException(String.format("property '%s' not set int config file '%s'.",
+						key, configFile.getAbsolutePath()));
 			}
+			ret = defValue;
+			logger.warn("Invalid or null property '{}'in config file '{}', use default value '{}'"
+					+ " instead.", key, configFile.getAbsolutePath(), defValue);
 		}
 		return ret;
 	}
 	
 	private static void save() throws IOException {
-		try(FileOutputStream out = new FileOutputStream(configPath)){
+		try(FileOutputStream out = new FileOutputStream(configFile)){
 			prop.store(out, "");
 		}
 	}
+
+	public static String getNextCubeTypeModel() {
+		return getProperty("tetirs.ultimate.next.cube.type.model.path", null);
+	}
+
+
 }
