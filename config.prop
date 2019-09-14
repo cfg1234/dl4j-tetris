@@ -1,15 +1,14 @@
 #
-#Fri Sep 13 14:24:19 CST 2019
-tetris.next.cube.area.right=829
-tetirs.ultimate.next.cube.type.model.path=model.bin
-tetris.area.left=587
-tetris.next.cube.area.left=770
+#Sat Sep 14 20:43:48 CST 2019
+tetris.next.cube.area.right=482
+tetris.area.left=269
+tetris.next.cube.area.left=430
 next.cube.getter.class.name=perf.cfg.dl4j.tetris.util.ScreenCaptureNextCubeGetter
 cube.model.path=cube-model.bin
-tetris.area.right=738
-tetris.next.cube.area.bottom=384
+tetris.area.right=403
+tetris.next.cube.area.bottom=385
 cube.score.calculator.class.name=perf.cfg.dl4j.tetris.util.PierreDellacherieScoreCalculator
-tetris.next.cube.area.top=355
+tetris.next.cube.area.top=358
 cube.action.class.name=perf.cfg.dl4j.tetris.util.YXH5UCActionGroup
-tetris.area.bottom=462
-tetris.area.top=156
+tetris.area.bottom=454
+tetris.area.top=184
