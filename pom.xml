@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>perf.cfg</groupId>
   <artifactId>dl4j-tetris</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   
   <properties>
 		<nd4j.backend>nd4j-native-platform</nd4j.backend>
