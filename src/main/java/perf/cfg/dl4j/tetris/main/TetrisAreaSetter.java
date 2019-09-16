@@ -14,11 +14,21 @@ public class TetrisAreaSetter {
 
 	private static ResourceBundle rb = ResourceBundle.getBundle("message.i18n.message");
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		JOptionPane.showMessageDialog(null, rb.getString("message.tetris.area.location"));
+		Thread.sleep(200);
 		Rectangle tetris = ScreenCapture.captureBounds();
+		if(tetris == null){
+			JOptionPane.showMessageDialog(null, rb.getString("cube.area.setter.interrupt"));
+			System.exit(1);
+		}
 		JOptionPane.showMessageDialog(null, rb.getString("message.next.cube.area.location"));
+		Thread.sleep(200);
 		Rectangle next = ScreenCapture.captureBounds();
+		if(next == null){
+			JOptionPane.showMessageDialog(null, rb.getString("cube.area.setter.interrupt"));
+			System.exit(1);
+		}
 		Common.setTetrisArea(new Point(tetris.x, tetris.y), new Point(tetris.x + tetris.width,
 				tetris.y + tetris.height));
 		Common.setNextCubeArea(new Point(next.x, next.y), new Point(next.x + next.width,
